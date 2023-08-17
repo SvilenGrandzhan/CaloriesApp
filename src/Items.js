@@ -1,3 +1,4 @@
+import App from './app'
 class Meal {
   constructor(name, calories) {
     // creating hexadecimal number by generating random number converting to string and slice first 2 symbols Zero and dot
