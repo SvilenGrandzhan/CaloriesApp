@@ -9,6 +9,11 @@ import './css/style.css'
 class App {
   constructor() {
     this._tracker = new CalorieTracker()
+    this._callEvenListeners()
+    this._tracker.loadsItems()
+  }
+
+  _callEvenListeners() {
     document.getElementById('meal-form').addEventListener('submit', this._newItem.bind(this, 'meal'))
     document.getElementById('workout-form').addEventListener('submit', this._newItem.bind(this, 'workout'))
     document.getElementById('meal-items').addEventListener('click', this._removeItem.bind(this, 'meal'))

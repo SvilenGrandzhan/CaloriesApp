@@ -1,12 +1,11 @@
-import App from './app'
 import Storage from './storage'
 
 class CalorieTracker {
   constructor() {
     this._calorieLimit = Storage.getCalorieLimit()
-    this._totalCalories = 0
-    this._meals = []
-    this._workouts = []
+    this._totalCalories = Storage.getTotalCalories(0)
+    this._meals = Storage.getMeals()
+    this._workouts = Storage.getWorkouts()
     this._displayCaloriesTotal()
     this._displayCaloriesLimit()
     this._displayCaloriesConsumed()
@@ -18,6 +17,8 @@ class CalorieTracker {
   addMeal(meal) {
     this._meals.push(meal)
     this._totalCalories += meal.calories
+    Storage.setTotalCalories(this._totalCalories)
+    Storage.saveMeal(meal)
     this._displayNewMeal(meal)
     this._render()
   }
@@ -25,6 +26,8 @@ class CalorieTracker {
   addWorkout(workout) {
     this._workouts.push(workout)
     this._totalCalories -= workout.calories
+    Storage.setTotalCalories(this._totalCalories)
+    Storage.saveWorkout(workout)
     this._displayNewWorkout(workout)
     this._render()
   }
@@ -38,7 +41,9 @@ class CalorieTracker {
     if (index !== -1) {
       const meal = this._meals[index]
       this._totalCalories -= meal.calories
+      Storage.setTotalCalories(this._totalCalories)
       this._meals.splice(index, 1)
+      Storage.removeMeal(id)
       this._render()
     }
   }
@@ -48,7 +53,9 @@ class CalorieTracker {
     if (index !== -1) {
       const workout = this._workouts[index]
       this._totalCalories += workout.calories
+      Storage.setTotalCalories(this._totalCalories)
       this._workouts.splice(index, 1)
+      Storage.removeWorkout(id)
       this._render()
     }
   }
@@ -57,6 +64,7 @@ class CalorieTracker {
     this._totalCalories = 0
     this._meals = []
     this._workouts = []
+    Storage.clearAll()
     this._render()
   }
 
@@ -65,6 +73,11 @@ class CalorieTracker {
     Storage.setCalorieLimit(limit)
     this._displayCaloriesLimit()
     this._render()
+  }
+
+  loadsItems() {
+    this._meals.forEach((meal) => this._displayNewMeal(meal))
+    this._workouts.forEach((workout) => this._displayNewWorkout(workout))
   }
 
   _displayCaloriesTotal() {
